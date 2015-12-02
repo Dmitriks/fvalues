@@ -4,13 +4,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Welcome to Fvalues</title>
-        <link type="text/css" rel="stylesheet" href="<?php echo base_url()?>css/styles.css"></link>
+        <title>Foreign exchange and commodity values</title>
+        <link type="text/css" rel="stylesheet" href="<?php echo base_url() ?>css/styles.css"></link>
     </head>
     <body>
 
         <div id="container">
-            <h1>Welcome to Fvalues!</h1>
+            <h1>Foreign exchange and commodity values</h1>
             <div id="body">
                 <table class="quotes">
                     <tr>
@@ -26,15 +26,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <td><?php echo $symbols[$key] ?></td>
                             <td><?php echo $elem['bid'] ?></td>
                             <td><?php echo $elem['ask'] ?></td>
-                            <td><?php echo $elem['change'] ?></td>
-                            <td><?php echo $elem['change24h'] ?></td>
-                            <td><?php echo $elem['lasttime'] ?></td>
+                            <td <?php if ($elem['change'] > 0): ?>class="green"<?php elseif ($elem['change'] < 0): ?>class="red"<?php endif; ?>><?php echo $elem['change'] ?></td>
+                            <td <?php if ($elem['change24h'] > 0): ?>class="green"<?php elseif ($elem['change24h'] < 0): ?>class="red"<?php endif; ?>><?php echo $elem['change24h'] ?></td>
+                            <td><?php echo date('Y-m-d H:i:s', strtotime('-2 hours', $elem['lasttime'])) ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </table>
             </div>
-            <p class="footer">Page rendered in <strong>{elapsed_time}</strong> seconds. <?php echo (ENVIRONMENT === 'development') ? 'CodeIgniter Version <strong>' . CI_VERSION . '</strong>' : '' ?></p>
+            <div class="footer"><div class="source">Source: <a href="https://www.instaforex.com">https://www.instaforex.com</a></div>Page rendered in <strong>{elapsed_time}</strong> seconds. <?php echo (ENVIRONMENT === 'development') ? 'CodeIgniter Version <strong>' . CI_VERSION . '</strong>' : '' ?></div>
         </div>
-
     </body>
 </html>

@@ -11,7 +11,8 @@ $config['api_url'] = 'https://quotes.instaforex.com/get_quotes.php?m=arr';
 $config['symbols'] = array(
 //  symbol      Trading instrument						
     'EURUSD' => 'Euro vs US Dollar',
-    'GOLD'   => 'Spot Gold',
+    'GOLD'   => 'Gold',
     'SILVER' => 'Silver',
-    '#NG'    => 'Natural Gas'
+    '#CL'    => 'Crude Oil Light Sweet',
+    '#NG'    => 'Natural Gas',
 );
