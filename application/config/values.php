@@ -16,3 +16,4 @@ $config['symbols'] = array(
     '#CL'    => 'Crude Oil Light Sweet',
     '#NG'    => 'Natural Gas',
 );
+$config['cache_time'] = 10;

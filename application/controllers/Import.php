@@ -11,7 +11,7 @@ class Import extends CI_Controller {
      * Get quotes
      */
     public function get_quotes() {
-        $this->load->helper('url');
+        $this->load->database();
         $this->load->model('symbol_model');
         $this->load->model('value_model');
         $this->config->load('values');
