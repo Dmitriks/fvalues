@@ -19,13 +19,15 @@ class Welcome extends CI_Controller {
         $apiUrl = $this->config->item('api_url');
         $symbols = $this->config->item('symbols');
         $cacheTime = $this->config->item('cache_time');
-        $quotes = $this->cache->file->get('quotes');
-        if (!$quotes) {
+        // Get quotes from cache
+        $data['quotes'] = $this->cache->file->get('quotes');
+        if (!$data['quotes']) {
+            // Get remote quotes
             $url = $apiUrl . '&q=' . urlencode(implode(',', array_keys($symbols)));
             $quotes = file_get_contents($url);
-            $this->cache->file->save('quotes', $quotes, $cacheTime);
+            $data['quotes'] = unserialize($quotes);
+            $this->cache->file->save('quotes', $data['quotes'], $cacheTime);
         }
-        $data['quotes'] = unserialize($quotes);
         $data['symbols'] = $symbols;
         $this->load->view('welcome', $data);
     }
