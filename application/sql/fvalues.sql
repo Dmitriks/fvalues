@@ -20,3 +20,5 @@ CREATE TABLE IF NOT EXISTS `minute_value` (
 CREATE TABLE IF NOT EXISTS `hour_value` LIKE `minute_value`;
 
 CREATE TABLE IF NOT EXISTS `day_value` LIKE `hour_value`;
+
+CREATE TABLE IF NOT EXISTS `month_value` LIKE `day_value`;

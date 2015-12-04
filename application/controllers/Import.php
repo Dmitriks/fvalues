@@ -40,9 +40,15 @@ class Import extends CI_Controller {
             }
             // Get last day value
             $lastDayValue = $this->value_model->get_last_day_value($data['symbol_id']);
-            // Save hour value
+            // Save day value
             if (!$lastDayValue || date('Y-m-d', $lastDayValue['time']) != date('Y-m-d', $data['time'])) {
                 $this->value_model->insert_day_value($data);
+            }
+            // Get last month value
+            $lastMonthValue = $this->value_model->get_last_month_value($data['symbol_id']);
+            // Save hour value
+            if (!$lastMonthValue || date('Y-m', $lastMonthValue['time']) != date('Y-m', $data['time'])) {
+                $this->value_model->insert_month_value($data);
             }
         }
     }

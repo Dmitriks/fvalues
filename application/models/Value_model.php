@@ -16,9 +16,9 @@ class Value_model extends CI_Model {
 
     /**
      * Get last value
+     * 
      * @param int       $symbol_id  Contains ID of symbol
      * @param string    $table      Contains table   
-     * 
      * @return array
      */
     private function _get_last_value($symbol_id, $table) {
@@ -30,8 +30,8 @@ class Value_model extends CI_Model {
 
     /**
      * Get last minute value
-     * @param int $symbol_id    Contains ID of symbol
      * 
+     * @param int $symbol_id    Contains ID of symbol
      * @return array
      */
     public function get_last_minute_value($symbol_id) {
@@ -40,8 +40,8 @@ class Value_model extends CI_Model {
 
     /**
      * Get last hour value
-     * @param int $symbol_id    Contains ID of symbol
      * 
+     * @param int $symbol_id    Contains ID of symbol
      * @return array
      */
     public function get_last_hour_value($symbol_id) {
@@ -50,8 +50,8 @@ class Value_model extends CI_Model {
 
     /**
      * Get last day value
-     * @param int $symbol_id    Contains ID of symbol
      * 
+     * @param int $symbol_id    Contains ID of symbol
      * @return array
      */
     public function get_last_day_value($symbol_id) {
@@ -59,7 +59,18 @@ class Value_model extends CI_Model {
     }
 
     /**
+     * Get last month value
+     * 
+     * @param int $symbol_id    Contains ID of symbol
+     * @return array
+     */
+    public function get_last_month_value($symbol_id) {
+        return $this->_get_last_value($symbol_id, 'month_value');
+    }
+
+    /**
      * Insert minute value
+     * 
      * @param array $data   Contains data
      */
     public function insert_minute_value($data) {
@@ -68,6 +79,7 @@ class Value_model extends CI_Model {
 
     /**
      * Insert hour value
+     * 
      * @param array $data   Contains data
      */
     public function insert_hour_value($data) {
@@ -76,10 +88,20 @@ class Value_model extends CI_Model {
 
     /**
      * Insert day value
+     * 
      * @param array $data   Contains data
      */
     public function insert_day_value($data) {
         $this->db->insert('day_value', $data);
+    }
+
+    /**
+     * Insert month value
+     * 
+     * @param array $data   Contains data
+     */
+    public function insert_month_value($data) {
+        $this->db->insert('month_value', $data);
     }
 
 }
