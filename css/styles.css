@@ -73,3 +73,7 @@ code {
 .source {
     float: left;
 }
+
+.chart {
+    margin-top: 10px;
+}
