@@ -29,6 +29,24 @@ class Value_model extends CI_Model {
     }
 
     /**
+     * Get values
+     * 
+     * @param int       $symbol_id  Contains ID of symbol
+     * @param int       $begin      Contains begin date
+     * @param int       $end        Contains end date
+     * @param string    $table      Contains table   
+     * @return array
+     */
+    private function _get_values($symbol_id, $begin, $end, $table) {
+        $this->db->where('symbol_id', $symbol_id);
+        $this->db->where('time >=', $begin);
+        $this->db->where('time <', $end);
+        $this->db->order_by('time', 'asc');
+        $query = $this->db->get($table);
+        return $query->result_array();
+    }
+
+    /**
      * Get last minute value
      * 
      * @param int $symbol_id    Contains ID of symbol
@@ -102,6 +120,54 @@ class Value_model extends CI_Model {
      */
     public function insert_month_value($data) {
         $this->db->insert('month_value', $data);
+    }
+
+    /**
+     * Get minute values
+     * 
+     * @param int       $symbol_id  Contains ID of symbol
+     * @param int       $begin      Contains begin date
+     * @param int       $end        Contains end date
+     * @return array
+     */
+    public function get_minute_values($symbol_id, $begin, $end) {
+        return $this->_get_values($symbol_id, $begin, $end, 'minute_value');
+    }
+
+    /**
+     * Get hour values
+     * 
+     * @param int       $symbol_id  Contains ID of symbol
+     * @param int       $begin      Contains begin date
+     * @param int       $end        Contains end date
+     * @return array
+     */
+    public function get_hour_values($symbol_id, $begin, $end) {
+        return $this->_get_values($symbol_id, $begin, $end, 'hour_value');
+    }
+
+    /**
+     * Get day values
+     * 
+     * @param int       $symbol_id  Contains ID of symbol
+     * @param int       $begin      Contains begin date
+     * @param int       $end        Contains end date
+     * @return array
+     */
+    public function get_day_values($symbol_id, $begin, $end) {
+        return $this->_get_values($symbol_id, $begin, $end, 'day_value');
+    }
+
+    /**
+     * Get month values
+     * 
+     * @param int       $symbol_id  Contains ID of symbol
+     * @param int       $begin      Contains begin date
+     * @param int       $end        Contains end date
+     * @return array
+     */
+    public function get_month_values($symbol_id, $begin, $end) {
+        return $this->_get_values($symbol_id, $begin, $end, 'month_value');
     }
 
 }
