@@ -50,7 +50,7 @@ class Chart extends CI_Controller {
                 $this->_drawChart($xPoints, $yPoints, 900, 300, $symbolName, $fileName);
             }
         }
-        $this->load->view('header', array('title' => 'Last 24 hours'));
+        $this->load->view('header', array('title' => 'Last hour'));
         $this->load->view('chart', $data);
         $this->load->view('footer');
     }

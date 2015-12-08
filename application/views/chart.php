@@ -7,5 +7,4 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <img class="chart" src="<?php echo base_url() ?><?php echo $chart ?>"/>
         </div>
     <?php endforeach; ?>
-
 </div>
