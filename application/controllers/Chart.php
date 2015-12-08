@@ -41,7 +41,7 @@ class Chart extends CI_Controller {
             $lastValue = $this->value_model->get_last_minute_value($symbolId);
             // Check last date of image file
             if (!file_exists($fileName) || !$lastValue || filemtime($fileName) < $lastValue['time']) {
-                $values = $this->value_model->get_hour_values($symbolId, $begin, $end);
+                $values = $this->value_model->get_minute_values($symbolId, $begin, $end);
                 $xPoints = array();
                 $yPoints = array();
                 foreach ($values as $value) {
@@ -100,14 +100,14 @@ class Chart extends CI_Controller {
             $fileName = 'img/chart/' . 'last_month_' . str_replace(' ', '_', $symbolName) . '.png';
             $data['charts'][] = $fileName;
             $fileName = BASEPATH . '../' . $fileName;
-            $lastValue = $this->value_model->get_last_minute_value($symbolId);
+            $lastValue = $this->value_model->get_last_day_value($symbolId);
             // Check last date of image file
             if (!file_exists($fileName) || !$lastValue || filemtime($fileName) < $lastValue['time']) {
-                $values = $this->value_model->get_hour_values($symbolId, $begin, $end);
+                $values = $this->value_model->get_day_values($symbolId, $begin, $end);
                 $xPoints = array();
                 $yPoints = array();
                 foreach ($values as $value) {
-                    $xPoints[] = date('H:i', $value['time']);
+                    $xPoints[] = date('d/m', $value['time']);
                     $yPoints[] = floatval($value['bid']);
                 }
                 $this->_drawChart($xPoints, $yPoints, 800, 300, $symbolName, $fileName);
@@ -165,7 +165,7 @@ class Chart extends CI_Controller {
         $myPicture->setGraphArea(50, 40, $xSize - 30, $ySize - 40);
 
         /* Draw the scale */
-        $scaleSettings = array("Floating" => TRUE, "DrawSubTicks" => TRUE, "CycleBackground" => TRUE, 'LabelRotation' => 90);
+        $scaleSettings = array("Floating" => TRUE, "DrawSubTicks" => TRUE, "CycleBackground" => TRUE);
         $myPicture->drawScale($scaleSettings);
 
         /* Turn on Antialiasing */
