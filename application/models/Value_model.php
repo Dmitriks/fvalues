@@ -47,6 +47,19 @@ class Value_model extends CI_Model {
     }
 
     /**
+     * Delete old values
+     * 
+     * @param int       $symbol_id  Contains ID of symbol
+     * @param int       $min_date   Contains minimal date
+     * @param string    $table      Contains table   
+     */
+    private function _delete_old_values($symbol_id, $min_date, $table) {
+        $this->db->where('symbol_id', $symbol_id);
+        $this->db->where('time < ', $min_date);
+        $this->db->delete($table);
+    }
+
+    /**
      * Get last minute value
      * 
      * @param int $symbol_id    Contains ID of symbol
@@ -168,6 +181,26 @@ class Value_model extends CI_Model {
      */
     public function get_month_values($symbol_id, $begin, $end) {
         return $this->_get_values($symbol_id, $begin, $end, 'month_value');
+    }
+
+    /**
+     * Delete old minute values
+     * 
+     * @param int       $symbol_id  Contains ID of symbol
+     * @param int       $min_date   Contains minimal date
+     */
+    public function delete_old_minute_values($symbol_id, $min_date) {
+        $this->_delete_old_values($symbol_id, $min_date, 'minute_value');
+    }
+
+    /**
+     * Delete old hour values
+     * 
+     * @param int       $symbol_id  Contains ID of symbol
+     * @param int       $min_date   Contains minimal date
+     */
+    public function delete_old_hour_values($symbol_id, $min_date) {
+        $this->_delete_old_values($symbol_id, $min_date, 'hour_value');
     }
 
 }

@@ -39,7 +39,7 @@ class Chart extends CI_Controller {
             $yPoints = array();
             foreach ($values as $value) {
                 $xPoints[] = date('H:i', $value['time']);
-                $yPoints[] = $value['bid'];
+                $yPoints[] = floatval($value['bid']);
             }
             $fileName = 'img/chart/' . 'last24h_' . str_replace(' ', '_', $symbolName) . '.png';
             $this->_drawChart($xPoints, $yPoints, 800, 300, $symbolName, $fileName);

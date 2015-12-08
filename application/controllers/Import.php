@@ -31,12 +31,14 @@ class Import extends CI_Controller {
             // Save minute value
             if (!$lastMinuteValue || date('Y-m-d H:i', $lastMinuteValue['time']) != date('Y-m-d H:i', $data['time'])) {
                 $this->value_model->insert_minute_value($data);
+                $this->value_model->delete_old_minute_values($data['symbol_id'], strtotime('-1 hour'));
             }
             // Get last hour value
             $lastHourValue = $this->value_model->get_last_hour_value($data['symbol_id']);
             // Save hour value
             if (!$lastHourValue || date('Y-m-d H', $lastHourValue['time']) != date('Y-m-d H', $data['time'])) {
                 $this->value_model->insert_hour_value($data);
+                $this->value_model->delete_old_hour_values($data['symbol_id'], strtotime('-1 day'));
             }
             // Get last day value
             $lastDayValue = $this->value_model->get_last_day_value($data['symbol_id']);
