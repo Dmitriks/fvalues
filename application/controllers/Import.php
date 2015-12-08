@@ -1,5 +1,7 @@
 <?php
 
+defined('BASEPATH') OR exit('No direct script access allowed');
+
 /**
  * Description of Import
  *
@@ -11,6 +13,7 @@ class Import extends CI_Controller {
      * Get quotes
      */
     public function get_quotes() {
+        $this->load->driver('cache');
         $this->load->database();
         $this->load->model('symbol_model');
         $this->load->model('value_model');
@@ -20,6 +23,12 @@ class Import extends CI_Controller {
         $url = $apiUrl . '&q=' . urlencode(implode(',', array_keys($symbols)));
         $content = file_get_contents($url);
         $quotes = unserialize($content);
+        // Save values in cache
+        $cacheTime = $this->config->item('cache_time');
+        $this->cache->file->delete('quotes');
+        $this->cache->file->save('quotes', $quotes, $cacheTime);
+        chmod(BASEPATH . '../application/cache/quotes', 0666);
+        // Save values in database
         foreach ($quotes as $key => $value) {
             $data = array();
             $data['symbol_id'] = $symbols[$key];
