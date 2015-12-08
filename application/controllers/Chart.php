@@ -34,15 +34,20 @@ class Chart extends CI_Controller {
         $begin = strtotime('-1 day', $end);
         $data['charts'] = array();
         foreach ($symbols as $symbolId => $symbolName) {
-            $values = $this->value_model->get_hour_values($symbolId, $begin, $end);
-            $xPoints = array();
-            $yPoints = array();
-            foreach ($values as $value) {
-                $xPoints[] = date('H:i', $value['time']);
-                $yPoints[] = floatval($value['bid']);
-            }
             $fileName = 'img/chart/' . 'last24h_' . str_replace(' ', '_', $symbolName) . '.png';
-            $this->_drawChart($xPoints, $yPoints, 800, 300, $symbolName, $fileName);
+            $lastValue = $this->value_model->get_last_hour_value($symbolId);
+            // Check last date of image file
+            if (!file_exists($fileName) || !$lastValue || filemtime($fileName) < $lastValue['time']) {
+                $values = $this->value_model->get_hour_values($symbolId, $begin, $end);
+                $xPoints = array();
+                $yPoints = array();
+                foreach ($values as $value) {
+                    $xPoints[] = date('H:i', $value['time']);
+                    $yPoints[] = floatval($value['bid']);
+                }
+                $fileName = 'img/chart/' . 'last24h_' . str_replace(' ', '_', $symbolName) . '.png';
+                $this->_drawChart($xPoints, $yPoints, 800, 300, $symbolName, $fileName);
+            }
             $data['charts'][] = $fileName;
         }
         $this->load->view('chart', $data);

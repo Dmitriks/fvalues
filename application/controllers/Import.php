@@ -27,7 +27,7 @@ class Import extends CI_Controller {
         $cacheTime = $this->config->item('cache_time');
         $this->cache->file->delete('quotes');
         $this->cache->file->save('quotes', $quotes, $cacheTime);
-        chmod(BASEPATH . '../application/cache/quotes', 0666);
+        chmod(BASEPATH . '../application/cache/quotes', 0644);
         // Save values in database
         foreach ($quotes as $key => $value) {
             $data = array();
