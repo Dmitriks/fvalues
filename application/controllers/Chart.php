@@ -27,94 +27,66 @@ class Chart extends CI_Controller {
      * Charts for last hour
      */
     public function last_hour() {
-        $this->load->helper('url');
-        $this->load->library('pchart');
-        $symbols = $this->symbol_model->get_symbol_names();
-        $end = time();
-        $begin = strtotime('-1 hour', $end);
-        $data['charts'] = array();
-        foreach ($symbols as $symbolId => $symbolName) {
-            $fileName = 'img/chart/' . 'last_hour_' . str_replace(' ', '_', $symbolName) . '.png';
-            $data['charts'][] = $fileName;
-            $fileName = BASEPATH . '../' . $fileName;
-            $lastValue = $this->value_model->get_last_minute_value($symbolId);
-            // Check last date of image file
-            if (!file_exists($fileName) || !$lastValue || filemtime($fileName) < $lastValue['time']) {
-                $values = $this->value_model->get_minute_values($symbolId, $begin, $end);
-                $xPoints = array();
-                $yPoints = array();
-                foreach ($values as $value) {
-                    $xPoints[] = date('H:i', $value['time']);
-                    $yPoints[] = floatval($value['bid']);
-                }
-                $this->_drawChart($xPoints, $yPoints, 900, 300, $symbolName, $fileName);
-            }
-        }
-        $this->load->view('header', array('title' => 'Last hour'));
-        $this->load->view('chart', $data);
-        $this->load->view('footer');
+        $this->_drawChartWithLastValues('hour', 'H:i', 'Last hour');
     }
 
     /**
      * Charts for last day
      */
     public function last_day() {
-        $this->load->helper('url');
-        $this->load->library('pchart');
-        $symbols = $this->symbol_model->get_symbol_names();
-        $end = time();
-        $begin = strtotime('-1 day', $end);
-        $data['charts'] = array();
-        foreach ($symbols as $symbolId => $symbolName) {
-            $fileName = 'img/chart/' . 'last_day_' . str_replace(' ', '_', $symbolName) . '.png';
-            $data['charts'][] = $fileName;
-            $fileName = BASEPATH . '../' . $fileName;
-            $lastValue = $this->value_model->get_last_hour_value($symbolId);
-            // Check last date of image file
-            if (!file_exists($fileName) || !$lastValue || filemtime($fileName) < $lastValue['time']) {
-                $values = $this->value_model->get_hour_values($symbolId, $begin, $end);
-                $xPoints = array();
-                $yPoints = array();
-                foreach ($values as $value) {
-                    $xPoints[] = date('H:i', $value['time']);
-                    $yPoints[] = floatval($value['bid']);
-                }
-                $this->_drawChart($xPoints, $yPoints, 900, 300, $symbolName, $fileName);
-            }
-        }
-        $this->load->view('header', array('title' => 'Last 24 hours'));
-        $this->load->view('chart', $data);
-        $this->load->view('footer');
+        $this->_drawChartWithLastValues('day', 'H:i', 'Last 24 hours');
     }
 
     /**
      * Charts for last month
      */
     public function last_month() {
+        $this->_drawChartWithLastValues('month', 'd/m', 'Last month');
+    }
+
+    /**
+     * Draw chart with last values
+     * 
+     * @param string $period    Contains period
+     * @param string $title     Contains title
+     */
+    private function _drawChartWithLastValues($period, $dateFormat, $title) {
         $this->load->helper('url');
         $this->load->library('pchart');
         $symbols = $this->symbol_model->get_symbol_names();
         $end = time();
-        $begin = strtotime('-1 month', $end);
+        $begin = strtotime("-1 $period", $end);
         $data['charts'] = array();
         foreach ($symbols as $symbolId => $symbolName) {
-            $fileName = 'img/chart/' . 'last_month_' . str_replace(' ', '_', $symbolName) . '.png';
+            $fileName = 'img/chart/' . 'last_' . $period . '_' . str_replace(' ', '_', $symbolName) . '.png';
             $data['charts'][] = $fileName;
             $fileName = BASEPATH . '../' . $fileName;
-            $lastValue = $this->value_model->get_last_day_value($symbolId);
+            if ($period == 'hour') { // hour
+                $lastValue = $this->value_model->get_last_minute_value($symbolId);
+            } elseif ($period == 'day') { // day
+                $lastValue = $this->value_model->get_last_hour_value($symbolId);
+            } else { // month
+                $lastValue = $this->value_model->get_last_day_value($symbolId);
+            }
             // Check last date of image file
             if (!file_exists($fileName) || !$lastValue || filemtime($fileName) < $lastValue['time']) {
-                $values = $this->value_model->get_day_values($symbolId, $begin, $end);
+                if ($period == 'hour') { // hour
+                    $values = $this->value_model->get_minute_values($symbolId, $begin, $end);
+                } elseif ($period == 'day') { // day
+                    $values = $this->value_model->get_hour_values($symbolId, $begin, $end);
+                } else { // month
+                    $values = $this->value_model->get_day_values($symbolId, $begin, $end);
+                }
                 $xPoints = array();
                 $yPoints = array();
                 foreach ($values as $value) {
-                    $xPoints[] = date('d/m', $value['time']);
+                    $xPoints[] = date($dateFormat, $value['time']);
                     $yPoints[] = floatval($value['bid']);
                 }
                 $this->_drawChart($xPoints, $yPoints, 900, 300, $symbolName, $fileName);
             }
         }
-        $this->load->view('header', array('title' => 'Last month'));
+        $this->load->view('header', array('title' => $title));
         $this->load->view('chart', $data);
         $this->load->view('footer');
     }
