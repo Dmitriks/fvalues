@@ -55,7 +55,7 @@ code {
 }
 
 .quotes {
-        font: 20px/30px normal Helvetica, Arial, sans-serif;
+    font: 20px/30px normal Helvetica, Arial, sans-serif;
 }
 
 .quotes td {
@@ -76,4 +76,13 @@ code {
 
 .chart {
     margin-top: 10px;
+}
+
+.menu {
+    border-bottom: 1px solid #D0D0D0;
+    padding: 14px 15px 10px 15px;
+}
+
+.menu a {
+    font-size: 14px;
 }

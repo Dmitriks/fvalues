@@ -32,7 +32,6 @@ class Chart extends CI_Controller {
         $symbols = $this->symbol_model->get_symbol_names();
         $end = time();
         $begin = strtotime('-1 hour', $end);
-        $data['title'] = 'Last hour';
         $data['charts'] = array();
         foreach ($symbols as $symbolId => $symbolName) {
             $fileName = 'img/chart/' . 'last_hour_' . str_replace(' ', '_', $symbolName) . '.png';
@@ -48,10 +47,12 @@ class Chart extends CI_Controller {
                     $xPoints[] = date('H:i', $value['time']);
                     $yPoints[] = floatval($value['bid']);
                 }
-                $this->_drawChart($xPoints, $yPoints, 800, 300, $symbolName, $fileName);
+                $this->_drawChart($xPoints, $yPoints, 900, 300, $symbolName, $fileName);
             }
         }
+        $this->load->view('header', array('title' => 'Last 24 hours'));
         $this->load->view('chart', $data);
+        $this->load->view('footer');
     }
 
     /**
@@ -63,7 +64,6 @@ class Chart extends CI_Controller {
         $symbols = $this->symbol_model->get_symbol_names();
         $end = time();
         $begin = strtotime('-1 day', $end);
-        $data['title'] = 'Last 24 hours';
         $data['charts'] = array();
         foreach ($symbols as $symbolId => $symbolName) {
             $fileName = 'img/chart/' . 'last_day_' . str_replace(' ', '_', $symbolName) . '.png';
@@ -79,10 +79,12 @@ class Chart extends CI_Controller {
                     $xPoints[] = date('H:i', $value['time']);
                     $yPoints[] = floatval($value['bid']);
                 }
-                $this->_drawChart($xPoints, $yPoints, 800, 300, $symbolName, $fileName);
+                $this->_drawChart($xPoints, $yPoints, 900, 300, $symbolName, $fileName);
             }
         }
+        $this->load->view('header', array('title' => 'Last 24 hours'));
         $this->load->view('chart', $data);
+        $this->load->view('footer');
     }
 
     /**
@@ -94,7 +96,6 @@ class Chart extends CI_Controller {
         $symbols = $this->symbol_model->get_symbol_names();
         $end = time();
         $begin = strtotime('-1 month', $end);
-        $data['title'] = 'Last month';
         $data['charts'] = array();
         foreach ($symbols as $symbolId => $symbolName) {
             $fileName = 'img/chart/' . 'last_month_' . str_replace(' ', '_', $symbolName) . '.png';
@@ -110,10 +111,12 @@ class Chart extends CI_Controller {
                     $xPoints[] = date('d/m', $value['time']);
                     $yPoints[] = floatval($value['bid']);
                 }
-                $this->_drawChart($xPoints, $yPoints, 800, 300, $symbolName, $fileName);
+                $this->_drawChart($xPoints, $yPoints, 900, 300, $symbolName, $fileName);
             }
         }
+        $this->load->view('header', array('title' => 'Last month'));
         $this->load->view('chart', $data);
+        $this->load->view('footer');
     }
 
     /**
