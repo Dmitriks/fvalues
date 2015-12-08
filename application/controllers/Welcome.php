@@ -27,7 +27,7 @@ class Welcome extends CI_Controller {
             $quotes = file_get_contents($url);
             $data['quotes'] = unserialize($quotes);
             $this->cache->file->save('quotes', $data['quotes'], $cacheTime);
-            chmod(BASEPATH . '../application/cache/quotes', 0666);
+            chmod(APPPATH . 'cache/quotes', 0666);
         }
         $data['symbols'] = $symbols;
         $this->load->view('welcome', $data);

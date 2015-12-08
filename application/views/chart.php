@@ -4,13 +4,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Last 24 hours charts</title>
+        <title><?php echo $title ?></title>
         <link type="text/css" rel="stylesheet" href="<?php echo base_url() ?>css/styles.css"></link>
     </head>
     <body>
 
         <div id="container">
-            <h1>Last 24 hours charts</h1>
+            <h1><?php echo $title ?></h1>
             <div id="body">
 
                 <?php foreach ($charts as $chart) : ?>

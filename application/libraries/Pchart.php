@@ -10,9 +10,9 @@ class Pchart {
 
     public function __construct() {
         /* pChart library inclusions */
-        require_once BASEPATH . '../application/libraries/pChart/class/pData.class.php';
-        require_once BASEPATH . '../application/libraries/pChart/class/pDraw.class.php';
-        require_once BASEPATH . '../application/libraries/pChart/class/pImage.class.php';
+        require_once APPPATH . 'libraries/pChart/class/pData.class.php';
+        require_once APPPATH . 'libraries/pChart/class/pDraw.class.php';
+        require_once APPPATH . 'libraries/pChart/class/pImage.class.php';
     }
 
     function pData() {

@@ -20,21 +20,55 @@ class Chart extends CI_Controller {
      * Index Page for this controller
      */
     public function index() {
-        $this->last24h();
+        $this->last_day();
     }
 
     /**
-     * Charts for last 24 hous
+     * Charts for last hour
      */
-    public function last24h() {
+    public function last_hour() {
+        $this->load->helper('url');
+        $this->load->library('pchart');
+        $symbols = $this->symbol_model->get_symbol_names();
+        $end = time();
+        $begin = strtotime('-1 hour', $end);
+        $data['title'] = 'Last hour';
+        $data['charts'] = array();
+        foreach ($symbols as $symbolId => $symbolName) {
+            $fileName = 'img/chart/' . 'last_hour_' . str_replace(' ', '_', $symbolName) . '.png';
+            $data['charts'][] = $fileName;
+            $fileName = BASEPATH . '../' . $fileName;
+            $lastValue = $this->value_model->get_last_minute_value($symbolId);
+            // Check last date of image file
+            if (!file_exists($fileName) || !$lastValue || filemtime($fileName) < $lastValue['time']) {
+                $values = $this->value_model->get_hour_values($symbolId, $begin, $end);
+                $xPoints = array();
+                $yPoints = array();
+                foreach ($values as $value) {
+                    $xPoints[] = date('H:i', $value['time']);
+                    $yPoints[] = floatval($value['bid']);
+                }
+                $this->_drawChart($xPoints, $yPoints, 800, 300, $symbolName, $fileName);
+            }
+        }
+        $this->load->view('chart', $data);
+    }
+
+    /**
+     * Charts for last day
+     */
+    public function last_day() {
         $this->load->helper('url');
         $this->load->library('pchart');
         $symbols = $this->symbol_model->get_symbol_names();
         $end = time();
         $begin = strtotime('-1 day', $end);
+        $data['title'] = 'Last 24 hours';
         $data['charts'] = array();
         foreach ($symbols as $symbolId => $symbolName) {
-            $fileName = 'img/chart/' . 'last24h_' . str_replace(' ', '_', $symbolName) . '.png';
+            $fileName = 'img/chart/' . 'last_day_' . str_replace(' ', '_', $symbolName) . '.png';
+            $data['charts'][] = $fileName;
+            $fileName = BASEPATH . '../' . $fileName;
             $lastValue = $this->value_model->get_last_hour_value($symbolId);
             // Check last date of image file
             if (!file_exists($fileName) || !$lastValue || filemtime($fileName) < $lastValue['time']) {
@@ -45,10 +79,39 @@ class Chart extends CI_Controller {
                     $xPoints[] = date('H:i', $value['time']);
                     $yPoints[] = floatval($value['bid']);
                 }
-                $fileName = 'img/chart/' . 'last24h_' . str_replace(' ', '_', $symbolName) . '.png';
                 $this->_drawChart($xPoints, $yPoints, 800, 300, $symbolName, $fileName);
             }
+        }
+        $this->load->view('chart', $data);
+    }
+
+    /**
+     * Charts for last month
+     */
+    public function last_month() {
+        $this->load->helper('url');
+        $this->load->library('pchart');
+        $symbols = $this->symbol_model->get_symbol_names();
+        $end = time();
+        $begin = strtotime('-1 month', $end);
+        $data['title'] = 'Last month';
+        $data['charts'] = array();
+        foreach ($symbols as $symbolId => $symbolName) {
+            $fileName = 'img/chart/' . 'last_month_' . str_replace(' ', '_', $symbolName) . '.png';
             $data['charts'][] = $fileName;
+            $fileName = BASEPATH . '../' . $fileName;
+            $lastValue = $this->value_model->get_last_minute_value($symbolId);
+            // Check last date of image file
+            if (!file_exists($fileName) || !$lastValue || filemtime($fileName) < $lastValue['time']) {
+                $values = $this->value_model->get_hour_values($symbolId, $begin, $end);
+                $xPoints = array();
+                $yPoints = array();
+                foreach ($values as $value) {
+                    $xPoints[] = date('H:i', $value['time']);
+                    $yPoints[] = floatval($value['bid']);
+                }
+                $this->_drawChart($xPoints, $yPoints, 800, 300, $symbolName, $fileName);
+            }
         }
         $this->load->view('chart', $data);
     }
@@ -92,11 +155,11 @@ class Chart extends CI_Controller {
         $myPicture->drawRectangle(0, 0, $xSize - 1, $ySize - 1, array("R" => 0, "G" => 0, "B" => 0));
 
         /* Write the chart title */
-        $myPicture->setFontProperties(array("FontName" => BASEPATH . "../application/libraries/pChart/fonts/Forgotte.ttf", "FontSize" => 11));
+        $myPicture->setFontProperties(array("FontName" => APPPATH . "libraries/pChart/fonts/Forgotte.ttf", "FontSize" => 11));
         $myPicture->drawText(150, 35, $title, array("FontSize" => 20, "Align" => TEXT_ALIGN_BOTTOMMIDDLE));
 
         /* Set the default font */
-        $myPicture->setFontProperties(array("FontName" => BASEPATH . "../application/libraries/pChart/fonts/verdana.ttf", "FontSize" => 7));
+        $myPicture->setFontProperties(array("FontName" => APPPATH . "libraries/pChart/fonts/verdana.ttf", "FontSize" => 7));
 
         /* Define the chart area */
         $myPicture->setGraphArea(50, 40, $xSize - 30, $ySize - 40);
