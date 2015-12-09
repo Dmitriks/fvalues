@@ -49,6 +49,7 @@ class Symbol_model extends CI_Model {
     /**
      * Get symbol by code
      * 
+     * @param string $code     Contains code of symbol
      * @return array
      */
     public function get_symbol_by_code($code) {

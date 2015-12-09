@@ -46,6 +46,8 @@ class Chart extends CI_Controller {
 
     /**
      * Charts for symbol
+     * 
+     * @param string $code    Contains code of symbol
      */
     public function symbol($code) {
         $this->load->helper('url');
