@@ -27,21 +27,21 @@ class Chart extends CI_Controller {
      * Charts for last hour
      */
     public function last_hour() {
-        $this->_drawChartsForPeriod('hour', 'Last hour');
+        $this->_drawChartsForPeriod('hour');
     }
 
     /**
      * Charts for last day
      */
     public function last_day() {
-        $this->_drawChartsForPeriod('day', 'Last 24 hours');
+        $this->_drawChartsForPeriod('day');
     }
 
     /**
      * Charts for last month
      */
     public function last_month() {
-        $this->_drawChartsForPeriod('month', 'Last month');
+        $this->_drawChartsForPeriod('month');
     }
 
     /**
@@ -71,9 +71,8 @@ class Chart extends CI_Controller {
      * Draw charts for period
      * 
      * @param string $period    Contains name of period
-     * @param string $title     Contains title
      */
-    private function _drawChartsForPeriod($period, $title) {
+    private function _drawChartsForPeriod($period) {
         $this->load->helper('url');
         $this->load->library('pchart');
         $symbols = $this->symbol_model->get_symbol_names();
@@ -83,6 +82,7 @@ class Chart extends CI_Controller {
             $data['charts'][] = $fileName;
             $this->_drawChartForSymbolAndPeriod($symbolId, $symbolName, $period, $fileName);
         }
+        $title = 'Last ' . $period;
         $this->load->view('header', array('title' => $title));
         $this->load->view('chart', $data);
         $this->load->view('footer');
