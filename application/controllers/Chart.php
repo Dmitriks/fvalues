@@ -62,6 +62,8 @@ class Chart extends CI_Controller {
             $this->load->view('header', array('title' => $symbol['name']));
             $this->load->view('chart', $data);
             $this->load->view('footer');
+        } else {
+            show_404();
         }
     }
 
