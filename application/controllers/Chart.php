@@ -27,68 +27,103 @@ class Chart extends CI_Controller {
      * Charts for last hour
      */
     public function last_hour() {
-        $this->_drawChartWithLastValues('hour', 'H:i', 'Last hour');
+        $this->_drawChartsForPeriod('hour', 'Last hour');
     }
 
     /**
      * Charts for last day
      */
     public function last_day() {
-        $this->_drawChartWithLastValues('day', 'H:i', 'Last 24 hours');
+        $this->_drawChartsForPeriod('day', 'Last 24 hours');
     }
 
     /**
      * Charts for last month
      */
     public function last_month() {
-        $this->_drawChartWithLastValues('month', 'd/m', 'Last month');
+        $this->_drawChartsForPeriod('month', 'Last month');
     }
 
     /**
-     * Draw chart with last values
+     * Charts for symbol
+     */
+    public function symbol($code) {
+        $this->load->helper('url');
+        $this->load->library('pchart');
+        $symbol = $this->symbol_model->get_symbol_by_code($code);
+        if ($symbol) {
+            $data['charts'] = array();
+            $periods = array('hour', 'day', 'month');
+            foreach ($periods as $period) {
+                $fileName = 'img/chart/' . 'last_' . $period . '_' . str_replace(' ', '_', $symbol['name']) . '.png';
+                $data['charts'][] = $fileName;
+                $this->_drawChartForSymbolAndPeriod($symbol['id'], $symbol['name'], $period, $fileName);
+            }
+            $this->load->view('header', array('title' => $symbol['name']));
+            $this->load->view('chart', $data);
+            $this->load->view('footer');
+        }
+    }
+
+    /**
+     * Draw charts for period
      * 
-     * @param string $period    Contains period
+     * @param string $period    Contains name of period
      * @param string $title     Contains title
      */
-    private function _drawChartWithLastValues($period, $dateFormat, $title) {
+    private function _drawChartsForPeriod($period, $title) {
         $this->load->helper('url');
         $this->load->library('pchart');
         $symbols = $this->symbol_model->get_symbol_names();
-        $end = time();
-        $begin = strtotime("-1 $period", $end);
         $data['charts'] = array();
         foreach ($symbols as $symbolId => $symbolName) {
             $fileName = 'img/chart/' . 'last_' . $period . '_' . str_replace(' ', '_', $symbolName) . '.png';
             $data['charts'][] = $fileName;
-            $fileName = BASEPATH . '../' . $fileName;
-            if ($period == 'hour') { // hour
-                $lastValue = $this->value_model->get_last_minute_value($symbolId);
-            } elseif ($period == 'day') { // day
-                $lastValue = $this->value_model->get_last_hour_value($symbolId);
-            } else { // month
-                $lastValue = $this->value_model->get_last_day_value($symbolId);
-            }
-            // Check last date of image file
-            if (!file_exists($fileName) || !$lastValue || filemtime($fileName) < $lastValue['time']) {
-                if ($period == 'hour') { // hour
-                    $values = $this->value_model->get_minute_values($symbolId, $begin, $end);
-                } elseif ($period == 'day') { // day
-                    $values = $this->value_model->get_hour_values($symbolId, $begin, $end);
-                } else { // month
-                    $values = $this->value_model->get_day_values($symbolId, $begin, $end);
-                }
-                $xPoints = array();
-                $yPoints = array();
-                foreach ($values as $value) {
-                    $xPoints[] = date($dateFormat, $value['time']);
-                    $yPoints[] = floatval($value['bid']);
-                }
-                $this->_drawChart($xPoints, $yPoints, 900, 300, $symbolName, $fileName);
-            }
+            $this->_drawChartForSymbolAndPeriod($symbolId, $symbolName, $period, $fileName);
         }
         $this->load->view('header', array('title' => $title));
         $this->load->view('chart', $data);
         $this->load->view('footer');
+    }
+
+    /**
+     * Draw chart for symbol and period
+     * 
+     * @param int    $symbolId      Contains ID of symbol
+     * @param string $symbolName    Contains name of symbol
+     * @param string $period        Contains name of period
+     * @param string $fileName      Contains name of file
+     */
+    private function _drawChartForSymbolAndPeriod($symbolId, $symbolName, $period, $fileName) {
+        $fileName = BASEPATH . '../' . $fileName;
+        if ($period == 'hour') { // hour
+            $lastValue = $this->value_model->get_last_minute_value($symbolId);
+        } elseif ($period == 'day') { // day
+            $lastValue = $this->value_model->get_last_hour_value($symbolId);
+        } else { // month
+            $lastValue = $this->value_model->get_last_day_value($symbolId);
+        }
+        // Check last date of image file
+        if (!file_exists($fileName) || !$lastValue || filemtime($fileName) < $lastValue['time']) {
+            $end = time();
+            $begin = strtotime("-1 $period", $end);
+            if ($period == 'hour') { // hour
+                $values = $this->value_model->get_minute_values($symbolId, $begin, $end);
+            } elseif ($period == 'day') { // day
+                $values = $this->value_model->get_hour_values($symbolId, $begin, $end);
+            } else { // month
+                $values = $this->value_model->get_day_values($symbolId, $begin, $end);
+            }
+            $xPoints = array();
+            $yPoints = array();
+            $dateFormat = ($period == 'month') ? 'd/m' : 'H:i';
+            foreach ($values as $value) {
+                $xPoints[] = date($dateFormat, $value['time']);
+                $yPoints[] = floatval($value['bid']);
+            }
+            $title = $symbolName . ' (Last ' . $period . ')';
+            $this->_drawChart($xPoints, $yPoints, 900, 300, $title, $fileName);
+        }
     }
 
     /**
@@ -130,11 +165,11 @@ class Chart extends CI_Controller {
         $myPicture->drawRectangle(0, 0, $xSize - 1, $ySize - 1, array("R" => 0, "G" => 0, "B" => 0));
 
         /* Write the chart title */
-        $myPicture->setFontProperties(array("FontName" => APPPATH . "libraries/pChart/fonts/Forgotte.ttf", "FontSize" => 11));
-        $myPicture->drawText(150, 35, $title, array("FontSize" => 20, "Align" => TEXT_ALIGN_BOTTOMMIDDLE));
+        $myPicture->setFontProperties(array("FontName" => APPPATH . "libraries/pChart/fonts/verdana.ttf", "FontSize" => 7));
+        $myPicture->drawText(200, 35, $title, array("FontSize" => 12, "Align" => TEXT_ALIGN_BOTTOMMIDDLE));
 
         /* Set the default font */
-        $myPicture->setFontProperties(array("FontName" => APPPATH . "libraries/pChart/fonts/verdana.ttf", "FontSize" => 7));
+        //$myPicture->setFontProperties(array("FontName" => APPPATH . "libraries/pChart/fonts/verdana.ttf", "FontSize" => 7));
 
         /* Define the chart area */
         $myPicture->setGraphArea(50, 40, $xSize - 30, $ySize - 40);

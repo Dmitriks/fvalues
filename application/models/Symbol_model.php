@@ -46,4 +46,15 @@ class Symbol_model extends CI_Model {
         return $result;
     }
 
+    /**
+     * Get symbol by code
+     * 
+     * @return array
+     */
+    public function get_symbol_by_code($code) {
+        $this->db->like('code', $code, 'before');
+        $query = $this->db->get('symbol', 1);
+        return $query->row_array();
+    }
+
 }

@@ -15,5 +15,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <a href="<?php echo base_url() ?>chart/last_hour">Last hour</a>
                 <a href="<?php echo base_url() ?>chart/last_day">Last day</a>
                 <a href="<?php echo base_url() ?>chart/last_month">Last month</a>
+                <a href="<?php echo base_url() ?>chart/symbol/EURUSD">Euro vs US Dollar</a>
+                <a href="<?php echo base_url() ?>chart/symbol/GOLD">Gold</a>
+                <a href="<?php echo base_url() ?>chart/symbol/SILVER">Silver</a>
+                <a href="<?php echo base_url() ?>chart/symbol/CL">Crude Oil Light Sweet</a>
+                <a href="<?php echo base_url() ?>chart/symbol/NG">Natural Gas</a>
             </div>
             <h1><?php echo $title ?></h1>
