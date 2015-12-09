@@ -124,7 +124,7 @@ class Chart extends CI_Controller {
                 $yPoints[] = floatval($value['bid']);
             }
             $title = $symbolName . ' (Last ' . $period . ')';
-            $this->_drawChart($xPoints, $yPoints, 900, 300, $title, $fileName);
+            $this->_drawChart($xPoints, $yPoints, 850, 300, $title, $fileName);
         }
     }
 
