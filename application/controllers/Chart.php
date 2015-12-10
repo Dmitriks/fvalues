@@ -57,9 +57,38 @@ class Chart extends CI_Controller {
             $data['charts'] = array();
             $periods = array('hour', 'day', 'month');
             foreach ($periods as $period) {
-                $fileName = 'img/chart/' . 'last_' . $period . '_' . str_replace(' ', '_', $symbol['name']) . '.png';
+                $fileName = 'img/chart/' . 'last_' . $period . '_' . str_replace('#', '', $symbol['code']) . '.png';
                 $data['charts'][] = $fileName;
                 $this->_drawChartForSymbolAndPeriod($symbol['id'], $symbol['name'], $period, $fileName);
+            }
+            $this->load->view('header', array('title' => $symbol['name']));
+            $this->load->view('chart', $data);
+            $this->load->view('footer');
+        } else {
+            show_404();
+        }
+    }
+
+    /**
+     * Charts for symbol
+     * 
+     * @param string $code          Contains code of symbol
+     * @param string $ratioCode     Contains code of ratio symbol
+     */
+    public function ratio($code, $ratioCode) {
+        $this->load->helper('url');
+        $this->load->library('pchart');
+        $symbol = $this->symbol_model->get_symbol_by_code($code);
+        $ratioSymbol = $this->symbol_model->get_symbol_by_code($ratioCode);
+        if ($symbol && $ratioSymbol) {
+            $data['charts'] = array();
+            $periods = array('hour', 'day', 'month');
+            foreach ($periods as $period) {
+                $fileName = 'img/chart/' . 'last_' . $period . '_' . str_replace('#', '', $symbol['code'])
+                        . '_' . str_replace('#', '', $ratioSymbol['code']) . '.png';
+                $data['charts'][] = $fileName;
+                $valueName = $symbol['name'] . ' / ' . $ratioSymbol['name'];
+                $this->_drawChartForSymbolAndPeriod($symbol['id'], $valueName, $period, $fileName, $ratioSymbol['id']);
             }
             $this->load->view('header', array('title' => $symbol['name']));
             $this->load->view('chart', $data);
@@ -77,12 +106,12 @@ class Chart extends CI_Controller {
     private function _drawChartsForPeriod($period) {
         $this->load->helper('url');
         $this->load->library('pchart');
-        $symbols = $this->symbol_model->get_symbol_names();
+        $symbols = $this->symbol_model->get_symbols();
         $data['charts'] = array();
-        foreach ($symbols as $symbolId => $symbolName) {
-            $fileName = 'img/chart/' . 'last_' . $period . '_' . str_replace(' ', '_', $symbolName) . '.png';
+        foreach ($symbols as $symbol) {
+            $fileName = 'img/chart/' . 'last_' . $period . '_' . str_replace('#', '', $symbol['code']) . '.png';
             $data['charts'][] = $fileName;
-            $this->_drawChartForSymbolAndPeriod($symbolId, $symbolName, $period, $fileName);
+            $this->_drawChartForSymbolAndPeriod($symbol['id'], $symbol['name'], $period, $fileName);
         }
         $title = 'Last ' . $period;
         $this->load->view('header', array('title' => $title));
@@ -94,11 +123,12 @@ class Chart extends CI_Controller {
      * Draw chart for symbol and period
      * 
      * @param int    $symbolId      Contains ID of symbol
-     * @param string $symbolName    Contains name of symbol
+     * @param string $valueName     Contains name of value
      * @param string $period        Contains name of period
      * @param string $fileName      Contains name of file
+     * @param int    $ratioSymbolId Contains ID of ratio symbol 
      */
-    private function _drawChartForSymbolAndPeriod($symbolId, $symbolName, $period, $fileName) {
+    private function _drawChartForSymbolAndPeriod($symbolId, $valueName, $period, $fileName, $ratioSymbolId = null) {
         $fileName = BASEPATH . '../' . $fileName;
         if ($period == 'hour') { // hour
             $lastValue = $this->value_model->get_last_minute_value($symbolId);
@@ -121,11 +151,38 @@ class Chart extends CI_Controller {
             $xPoints = array();
             $yPoints = array();
             $dateFormat = ($period == 'month') ? 'd/m' : 'H:i';
-            foreach ($values as $value) {
-                $xPoints[] = date($dateFormat, $value['time']);
-                $yPoints[] = floatval($value['bid']);
+            if ($ratioSymbolId) {
+                // Get ratio values
+                if ($period == 'hour') { // hour
+                    $ratioValues = $this->value_model->get_minute_values($ratioSymbolId, $begin, $end);
+                } elseif ($period == 'day') { // day
+                    $ratioValues = $this->value_model->get_hour_values($ratioSymbolId, $begin, $end);
+                } else { // month
+                    $ratioValues = $this->value_model->get_day_values($ratioSymbolId, $begin, $end);
+                }
+                // Count values
+                $cnt = count($values);
+                $ratioCnt = count($ratioValues);
+                if ($ratioCnt < $cnt) {
+                    $cnt = $ratioCnt;
+                }
+                // Fill X and Y arrays for ratio chart
+                for ($i = 0; $i < $cnt; $i++) {
+                    $value = $values[$i];
+                    $ratioValue = $ratioValues[$i];
+                    if ($ratioValue['bid']) {
+                        $xPoints[] = date($dateFormat, $value['time']);
+                        $yPoints[] = round($value['bid'] / $ratioValue['bid'], 2);
+                    }
+                }
+            } else {
+                // Fill X and Y arrays for simple chart
+                foreach ($values as $value) {
+                    $xPoints[] = date($dateFormat, $value['time']);
+                    $yPoints[] = floatval($value['bid']);
+                }
             }
-            $title = $symbolName . ' (Last ' . $period . ')';
+            $title = $valueName . ' (Last ' . $period . ')';
             $this->_drawChart($xPoints, $yPoints, 850, 300, $title, $fileName);
         }
     }
@@ -170,7 +227,7 @@ class Chart extends CI_Controller {
 
         /* Write the chart title */
         $myPicture->setFontProperties(array("FontName" => APPPATH . "libraries/pChart/fonts/verdana.ttf", "FontSize" => 7));
-        $myPicture->drawText(200, 35, $title, array("FontSize" => 12, "Align" => TEXT_ALIGN_BOTTOMMIDDLE));
+        $myPicture->drawText(round($xSize / 2), 35, $title, array("FontSize" => 12, "Align" => TEXT_ALIGN_BOTTOMMIDDLE));
 
         /* Set the default font */
         //$myPicture->setFontProperties(array("FontName" => APPPATH . "libraries/pChart/fonts/verdana.ttf", "FontSize" => 7));

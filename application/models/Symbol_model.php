@@ -31,19 +31,13 @@ class Symbol_model extends CI_Model {
     }
 
     /**
-     * Get symbol names (id => name)
+     * Get symbols
      * 
      * @return array
      */
-    public function get_symbol_names() {
-        $result = array();
-        $this->db->select('id,name');
+    public function get_symbols() {
         $query = $this->db->get('symbol');
-        $symbols = $query->result_array();
-        foreach ($symbols as $symbol) {
-            $result[$symbol['id']] = $symbol['name'];
-        }
-        return $result;
+        return $query->result_array();
     }
 
     /**
