@@ -59,7 +59,7 @@ class Chart extends CI_Controller {
             foreach ($periods as $period) {
                 $fileName = 'img/chart/' . 'last_' . $period . '_' . str_replace('#', '', $symbol['code']) . '.png';
                 $data['charts'][] = $fileName;
-                $this->_drawChartForSymbolAndPeriod($symbol['id'], $symbol['name'], $period, $fileName);
+                $this->_drawChartForValueAndPeriod($symbol['id'], $symbol['name'], $period, $fileName);
             }
             $this->load->view('header', array('title' => $symbol['name']));
             $this->load->view('chart', $data);
@@ -88,7 +88,7 @@ class Chart extends CI_Controller {
                         . '_' . str_replace('#', '', $ratioSymbol['code']) . '.png';
                 $data['charts'][] = $fileName;
                 $valueName = $symbol['name'] . ' / ' . $ratioSymbol['name'];
-                $this->_drawChartForSymbolAndPeriod($symbol['id'], $valueName, $period, $fileName, $ratioSymbol['id']);
+                $this->_drawChartForValueAndPeriod($symbol['id'], $valueName, $period, $fileName, $ratioSymbol['id']);
             }
             $this->load->view('header', array('title' => $valueName));
             $this->load->view('chart', $data);
@@ -111,7 +111,7 @@ class Chart extends CI_Controller {
         foreach ($symbols as $symbol) {
             $fileName = 'img/chart/' . 'last_' . $period . '_' . str_replace('#', '', $symbol['code']) . '.png';
             $data['charts'][] = $fileName;
-            $this->_drawChartForSymbolAndPeriod($symbol['id'], $symbol['name'], $period, $fileName);
+            $this->_drawChartForValueAndPeriod($symbol['id'], $symbol['name'], $period, $fileName);
         }
         $title = 'Last ' . $period;
         $this->load->view('header', array('title' => $title));
@@ -120,7 +120,7 @@ class Chart extends CI_Controller {
     }
 
     /**
-     * Draw chart for symbol and period
+     * Draw chart for value and period
      * 
      * @param int    $symbolId      Contains ID of symbol
      * @param string $valueName     Contains name of value
@@ -128,7 +128,7 @@ class Chart extends CI_Controller {
      * @param string $fileName      Contains name of file
      * @param int    $ratioSymbolId Contains ID of ratio symbol 
      */
-    private function _drawChartForSymbolAndPeriod($symbolId, $valueName, $period, $fileName, $ratioSymbolId = null) {
+    private function _drawChartForValueAndPeriod($symbolId, $valueName, $period, $fileName, $ratioSymbolId = null) {
         $fileName = BASEPATH . '../' . $fileName;
         if ($period == 'hour') { // hour
             $lastValue = $this->value_model->get_last_minute_value($symbolId);
