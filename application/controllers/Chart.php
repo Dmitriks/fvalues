@@ -90,7 +90,7 @@ class Chart extends CI_Controller {
                 $valueName = $symbol['name'] . ' / ' . $ratioSymbol['name'];
                 $this->_drawChartForSymbolAndPeriod($symbol['id'], $valueName, $period, $fileName, $ratioSymbol['id']);
             }
-            $this->load->view('header', array('title' => $symbol['name']));
+            $this->load->view('header', array('title' => $valueName));
             $this->load->view('chart', $data);
             $this->load->view('footer');
         } else {
