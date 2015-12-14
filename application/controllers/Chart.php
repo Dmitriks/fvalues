@@ -200,12 +200,15 @@ class Chart extends CI_Controller {
     private function _drawChart($xPoints, $yPoints, $xSize, $ySize, $title, $fileName) {
         /* Create and populate the pData object */
         $MyData = $this->pchart->pData();
+        // Check empty points
+        if (empty($yPoints)) {
+            $xPoints = array(0);
+            $yPoints = array(0);
+        }
         $MyData->addPoints($yPoints, "Line 1");
         $lSettings = array("R" => 0, "G" => 0, "B" => 255, "Alpha" => 80);
         $MyData->setPalette("Line 1", $lSettings);
-        //$MyData->setAxisName(0, "USD");
         $MyData->addPoints($xPoints, "Dates");
-        //$MyData->setSerieDescription("Dates", "Dates");
         $MyData->setAbscissa("Dates");
 
         /* Create the pChart object */
