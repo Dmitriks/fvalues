@@ -11,7 +11,7 @@ $config['api_url'] = 'https://quotes.instaforex.com/get_quotes.php?m=arr';
 $config['symbols'] = array(
 //  symbol      Trading instrument						
     'EURUSD' => 'Euro vs US Dollar',
-    'GBPUSD' =>	'Great Britain vs US Dollar',
+    'GBPUSD' =>	'Great Britain Pound vs US Dollar',
     'USDJPY' =>	'US Dollar vs Japanese Yen',
     'USDCHF' =>	'US Dollar vs Swiss Franc',
     'GOLD'   => 'Gold',
