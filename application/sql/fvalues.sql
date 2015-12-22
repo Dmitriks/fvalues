@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS `symbol` (
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
-INSERT IGNORE INTO `symbol` VALUES (1,'EURUSD','Euro vs US Dollar'),(2,'GOLD','Gold'),(3,'SILVER','Silver'),(4,'#CL','Crude Oil Light Sweet'),(5,'#NG','Natural Gas');
+INSERT IGNORE INTO `symbol` VALUES (1,'EURUSD','Euro vs US Dollar'),(2,'GOLD','Gold'),(3,'SILVER','Silver'),(4,'#CL','Crude Oil Light Sweet'),(5,'#NG','Natural Gas'),(7,'GBPUSD','Great Britan vs US Dollar'),(8,'USDJPY','US Dollar vs Japanese Yen'),(9,'USDCHF','US Dollar vs Swiss Franc');
 
 CREATE TABLE IF NOT EXISTS `minute_value` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

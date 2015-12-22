@@ -16,6 +16,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <a href="<?php echo base_url() ?>chart/last_day">Last day</a>
                 <a href="<?php echo base_url() ?>chart/last_month">Last month</a>
                 <a href="<?php echo base_url() ?>chart/symbol/EURUSD">EURUSD</a>
+                <a href="<?php echo base_url() ?>chart/symbol/GBPUSD">GBPUSD</a>
+                <a href="<?php echo base_url() ?>chart/symbol/USDJPY">USDJPY</a>
+                <a href="<?php echo base_url() ?>chart/symbol/USDCHF">USDCHF</a>
                 <a href="<?php echo base_url() ?>chart/symbol/GOLD">Gold</a>
                 <a href="<?php echo base_url() ?>chart/symbol/SILVER">Silver</a>
                 <a href="<?php echo base_url() ?>chart/symbol/CL">#CL</a>
@@ -23,7 +26,5 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <a href="<?php echo base_url() ?>chart/ratio/GOLD/EURUSD">Gold / EURUSD</a>
                 <a href="<?php echo base_url() ?>chart/ratio/GOLD/SILVER">Gold / Silver</a>
                 <a href="<?php echo base_url() ?>chart/ratio/GOLD/CL">Gold / #CL</a>
-                <a href="<?php echo base_url() ?>chart/ratio/GOLD/NG">Gold / #NG</a>
-                <a href="<?php echo base_url() ?>chart/ratio/CL/NG">#CL / #NG</a>
             </div>
             <h1><?php echo $title ?></h1>
