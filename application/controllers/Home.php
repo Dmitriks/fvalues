@@ -17,8 +17,17 @@ class Home extends CI_Controller {
         $this->load->helper('url');
         $this->config->load('values');
         $apiUrl = $this->config->item('api_url');
-        $symbols = $this->config->item('symbols');
         $cacheTime = $this->config->item('cache_time');
+        // Get symbols from cache
+        $symbols = $this->cache->file->get('symbols');
+        if (!$symbols) {
+            // Get symbols from database
+            $this->load->database();
+            $this->load->model('symbol_model');
+            $symbols = $this->symbol_model->get_symbol_names();
+            $this->cache->file->save('symbols', $symbols, $cacheTime);
+            chmod(APPPATH . 'cache/symbols', 0666);
+        }
         // Get quotes from cache
         $data['quotes'] = $this->cache->file->get('quotes');
         if (!$data['quotes']) {

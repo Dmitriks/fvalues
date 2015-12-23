@@ -22,8 +22,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <a href="<?php echo base_url() ?>chart/symbol/GOLD">Gold</a>
                 <a href="<?php echo base_url() ?>chart/symbol/SILVER">Silver</a>
                 <a href="<?php echo base_url() ?>chart/symbol/CL">#CL</a>
-                <a href="<?php echo base_url() ?>chart/symbol/NG">#NG</a>
-                <a href="<?php echo base_url() ?>chart/ratio/GOLD/EURUSD">Gold / EURUSD</a>
                 <a href="<?php echo base_url() ?>chart/ratio/GOLD/SILVER">Gold / Silver</a>
                 <a href="<?php echo base_url() ?>chart/ratio/GOLD/CL">Gold / #CL</a>
             </div>

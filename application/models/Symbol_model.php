@@ -31,11 +31,31 @@ class Symbol_model extends CI_Model {
     }
 
     /**
+     * Get symbol names (code => name)
+     * 
+     * @return array
+     */
+    public function get_symbol_names() {
+        $result = array();
+        $this->db->select('code,name');
+        $this->db->where('visible', true);
+        $this->db->order_by('sort', 'asc');
+        $query = $this->db->get('symbol');
+        $symbols = $query->result_array();
+        foreach ($symbols as $symbol) {
+            $result[$symbol['code']] = $symbol['name'];
+        }
+        return $result;
+    }
+
+    /**
      * Get symbols
      * 
      * @return array
      */
     public function get_symbols() {
+        $this->db->where('visible', true);
+        $this->db->order_by('sort', 'asc');
         $query = $this->db->get('symbol');
         return $query->result_array();
     }
