@@ -19,6 +19,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <a href="<?php echo base_url() ?>chart/symbol/GBPUSD">GBPUSD</a>
                 <a href="<?php echo base_url() ?>chart/symbol/USDJPY">USDJPY</a>
                 <a href="<?php echo base_url() ?>chart/symbol/USDCHF">USDCHF</a>
+                <a href="<?php echo base_url() ?>chart/symbol/USDUAH">USDUAH</a>
                 <a href="<?php echo base_url() ?>chart/symbol/GOLD">Gold</a>
                 <a href="<?php echo base_url() ?>chart/symbol/SILVER">Silver</a>
                 <a href="<?php echo base_url() ?>chart/symbol/CL">#CL</a>
