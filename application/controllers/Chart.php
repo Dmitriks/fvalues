@@ -190,8 +190,13 @@ class Chart extends CI_Controller {
                     $yPoints[] = floatval($value['bid']);
                 }
             }
-            $title = $valueName . ' (Last ' . $period . ')';
-            $this->_drawChart($xPoints, $yPoints, 850, 300, $title, $fileName);
+            // Check points
+            if ($xPoints) {
+                $title = $valueName . ' (Last ' . $period . ')';
+                $this->_drawChart($xPoints, $yPoints, 850, 300, $title, $fileName);
+            } else {
+                return false;
+            }
         }
         return true;
     }
