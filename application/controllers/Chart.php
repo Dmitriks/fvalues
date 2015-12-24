@@ -58,8 +58,9 @@ class Chart extends CI_Controller {
             $periods = array('hour', 'day', 'month');
             foreach ($periods as $period) {
                 $fileName = 'img/chart/' . 'last_' . $period . '_' . str_replace('#', '', $symbol['code']) . '.png';
-                $data['charts'][] = $fileName;
-                $this->_drawChartForValueAndPeriod($symbol['id'], $symbol['name'], $period, $fileName);
+                if ($this->_drawChartForValueAndPeriod($symbol['id'], $symbol['name'], $period, $fileName)) {
+                    $data['charts'][] = $fileName;
+                }
             }
             $this->load->view('header', array('title' => $symbol['name']));
             $this->load->view('chart', $data);
@@ -86,9 +87,10 @@ class Chart extends CI_Controller {
             foreach ($periods as $period) {
                 $fileName = 'img/chart/' . 'last_' . $period . '_' . str_replace('#', '', $symbol['code'])
                         . '_' . str_replace('#', '', $ratioSymbol['code']) . '.png';
-                $data['charts'][] = $fileName;
                 $valueName = $symbol['name'] . ' / ' . $ratioSymbol['name'];
-                $this->_drawChartForValueAndPeriod($symbol['id'], $valueName, $period, $fileName, $ratioSymbol['id']);
+                if ($this->_drawChartForValueAndPeriod($symbol['id'], $valueName, $period, $fileName, $ratioSymbol['id'])) {
+                    $data['charts'][] = $fileName;
+                }
             }
             $this->load->view('header', array('title' => $valueName));
             $this->load->view('chart', $data);
@@ -110,8 +112,9 @@ class Chart extends CI_Controller {
         $data['charts'] = array();
         foreach ($symbols as $symbol) {
             $fileName = 'img/chart/' . 'last_' . $period . '_' . str_replace('#', '', $symbol['code']) . '.png';
-            $data['charts'][] = $fileName;
-            $this->_drawChartForValueAndPeriod($symbol['id'], $symbol['name'], $period, $fileName);
+            if ($this->_drawChartForValueAndPeriod($symbol['id'], $symbol['name'], $period, $fileName)) {
+                $data['charts'][] = $fileName;
+            }
         }
         $title = 'Last ' . $period;
         $this->load->view('header', array('title' => $title));
@@ -126,7 +129,8 @@ class Chart extends CI_Controller {
      * @param string $valueName     Contains name of value
      * @param string $period        Contains name of period
      * @param string $fileName      Contains name of file
-     * @param int    $ratioSymbolId Contains ID of ratio symbol 
+     * @param int    $ratioSymbolId Contains ID of ratio symbol
+     * @return bool 
      */
     private function _drawChartForValueAndPeriod($symbolId, $valueName, $period, $fileName, $ratioSymbolId = null) {
         $fileName = BASEPATH . '../' . $fileName;
@@ -137,8 +141,12 @@ class Chart extends CI_Controller {
         } else { // month
             $lastValue = $this->value_model->get_last_day_value($symbolId);
         }
+        // Check last value
+        if (!$lastValue) {
+            return false;
+        }
         // Check last date of image file
-        if (!file_exists($fileName) || !$lastValue || filemtime($fileName) < $lastValue['time']) {
+        if (!file_exists($fileName) || filemtime($fileName) < $lastValue['time']) {
             $end = time();
             $begin = strtotime("-1 $period", $end);
             if ($period == 'hour') { // hour
@@ -185,6 +193,7 @@ class Chart extends CI_Controller {
             $title = $valueName . ' (Last ' . $period . ')';
             $this->_drawChart($xPoints, $yPoints, 850, 300, $title, $fileName);
         }
+        return true;
     }
 
     /**
@@ -200,11 +209,6 @@ class Chart extends CI_Controller {
     private function _drawChart($xPoints, $yPoints, $xSize, $ySize, $title, $fileName) {
         /* Create and populate the pData object */
         $MyData = $this->pchart->pData();
-        // Check empty points
-        if (empty($yPoints)) {
-            $xPoints = array(0);
-            $yPoints = array(0);
-        }
         $MyData->addPoints($yPoints, "Line 1");
         $lSettings = array("R" => 0, "G" => 0, "B" => 255, "Alpha" => 80);
         $MyData->setPalette("Line 1", $lSettings);
