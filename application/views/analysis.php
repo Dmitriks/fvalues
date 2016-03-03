@@ -12,7 +12,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <td>#CL</td>
             <td>#USDX</td>
         </tr>
-        <?php foreach (array('month', 'day', 'hour') as $period) : ?>
+        <?php foreach (array('year', 'month', 'day', 'hour') as $period) : ?>
             <tr>
                 <?php foreach (array('EURUSD', 'GBPUSD', 'USDRUR', 'GOLD', 'SILVER', 'CL', 'USDX') as $symbol) : ?>
                     <td>

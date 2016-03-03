@@ -40,13 +40,13 @@ class Analysis extends CI_Controller {
                 $values = $this->value_model->get_minute_values($symbol['id'], $begin, $end);
             } elseif ($period == 'day') { // day
                 $values = $this->value_model->get_hour_values($symbol['id'], $begin, $end);
-            } else { // month
+            } else { // month or year
                 $values = $this->value_model->get_day_values($symbol['id'], $begin, $end);
             }
             $waves = $this->_getWaves($values);
             $this->_analyzeWaves($waves);
             $data['waves'] = $waves;
-            $this->load->view('header', array('title' => 'Analysis of ' . $symbol['name'] . ' (Last ' . $period . ')', 'period' => $period));
+            $this->load->view('header', array('title' => 'Analysis of ' . $symbol['name'] . ' (Last ' . $period . ')', 'period' => $period, 'symbol' => $code));
             $this->load->view('table', $data);
             $this->load->view('footer');
         } else {
