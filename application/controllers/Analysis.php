@@ -120,7 +120,7 @@ class Analysis extends CI_Controller {
                 if ($i + 1 < $cnt) {
                     if ($waves[$i]['start_value'] < $waves[$i + 1]['end_value']) { // 2 is higher than 1
                         if ($i + 3 < $cnt) {
-                            if ($waves[$i]['end_value'] <= $waves[$i + 3]['end_value']) { // 4 don't inersect 1
+                            if ($waves[$i]['end_value'] < $waves[$i + 3]['end_value']) { // 4 don't inersect 1
                                 if ($i + 4 < $cnt) {
                                     $firstWave = $waves[$i]['end_value'] - $waves[$i]['start_value'];
                                     $thirdWave = $waves[$i + 2]['end_value'] - $waves[$i + 2]['start_value'];
@@ -132,7 +132,7 @@ class Analysis extends CI_Controller {
                                         $waves[$i + 3]['marker'] = 4;
                                         $waves[$i + 4]['marker'] = 5;
                                         if ($i + 7 < $cnt) {
-                                            if ($waves[$i + 7]['end_value'] >= $waves[$i]['start_value']) { // C higer than 1
+                                            if ($waves[$i + 7]['end_value'] > $waves[$i]['start_value'] && $waves[$i + 7]['end_value'] < $waves[$i + 4]['end_value']) { // C greater than 1 and C less than 5
                                                 $waves[$i + 5]['marker'] = 'A';
                                                 $waves[$i + 6]['marker'] = 'B';
                                                 $waves[$i + 7]['marker'] = 'C';
@@ -153,7 +153,7 @@ class Analysis extends CI_Controller {
                 if ($i + 1 < $cnt) {
                     if ($waves[$i]['start_value'] > $waves[$i + 1]['end_value']) { // 2 is low than 1
                         if ($i + 3 < $cnt) {
-                            if ($waves[$i]['end_value'] >= $waves[$i + 3]['end_value']) { // 4 don't inersect 1
+                            if ($waves[$i]['end_value'] > $waves[$i + 3]['end_value']) { // 4 don't inersect 1
                                 if ($i + 4 < $cnt) {
                                     $firstWave = $waves[$i]['start_value'] - $waves[$i]['end_value'];
                                     $thirdWave = $waves[$i + 2]['start_value'] - $waves[$i + 2]['end_value'];
@@ -165,7 +165,7 @@ class Analysis extends CI_Controller {
                                         $waves[$i + 3]['marker'] = 4;
                                         $waves[$i + 4]['marker'] = 5;
                                         if ($i + 7 < $cnt) {
-                                            if ($waves[$i + 7]['end_value'] <= $waves[$i]['start_value']) { // C higer than 1
+                                            if ($waves[$i + 7]['end_value'] < $waves[$i]['start_value'] && $waves[$i + 7]['end_value'] > $waves[$i + 4]['end_value']) { // C less than 1 and C greater than 5
                                                 $waves[$i + 5]['marker'] = 'A';
                                                 $waves[$i + 6]['marker'] = 'B';
                                                 $waves[$i + 7]['marker'] = 'C';
