@@ -65,7 +65,7 @@ class Analysis extends CI_Controller {
     /**
      * Get waves from array of values
      * 
-     * @param array $values
+     * @param array $values     Contains array of values
      * @return array
      */
     private function _getWaves($values) {
@@ -118,7 +118,7 @@ class Analysis extends CI_Controller {
     /**
      * Analyze waves
      * 
-     * @param type $waves
+     * @param array $waves
      */
     private function _analyzeWaves(&$waves) {
         $cnt = count($waves);
@@ -126,7 +126,7 @@ class Analysis extends CI_Controller {
         while ($i < $cnt) {
             if ($waves[$i]['direction'] == 1) {
                 if ($i + 1 < $cnt) {
-                    if ($waves[$i]['start_value'] < $waves[$i + 1]['end_value']) { // 2 is higher than 1
+                    if ($waves[$i]['start_value'] < $waves[$i + 1]['end_value']) { // end of 2 is higher than start of 1
                         if ($i + 3 < $cnt) {
                             if ($waves[$i]['end_value'] < $waves[$i + 3]['end_value']) { // 4 don't inersect 1
                                 if ($i + 4 < $cnt) {
@@ -139,8 +139,8 @@ class Analysis extends CI_Controller {
                                         $waves[$i + 2]['marker'] = 3;
                                         $waves[$i + 3]['marker'] = 4;
                                         $waves[$i + 4]['marker'] = 5;
-                                        if ($i + 7 < $cnt) {
-                                            if ($waves[$i + 7]['end_value'] > $waves[$i]['start_value'] && $waves[$i + 7]['end_value'] < $waves[$i + 4]['end_value']) { // C greater than 1 and C less than 5
+                                        if ($i + 9 < $cnt) {
+                                            if ($waves[$i + 7]['end_value'] > $waves[$i]['start_value'] && $waves[$i + 7]['end_value'] < $waves[$i + 4]['end_value'] && $waves[$i + 9]['end_value'] > $waves[$i]['start_value']) { // end of C greater than start of 1 AND end of C less than end 5 AND end of C+2 greater than start of 1
                                                 $waves[$i + 5]['marker'] = 'A';
                                                 $waves[$i + 6]['marker'] = 'B';
                                                 $waves[$i + 7]['marker'] = 'C';
@@ -159,7 +159,7 @@ class Analysis extends CI_Controller {
                 }
             } elseif ($waves[$i]['direction'] == -1) {
                 if ($i + 1 < $cnt) {
-                    if ($waves[$i]['start_value'] > $waves[$i + 1]['end_value']) { // 2 is low than 1
+                    if ($waves[$i]['start_value'] > $waves[$i + 1]['end_value']) { // end of 2 is less than start of 1
                         if ($i + 3 < $cnt) {
                             if ($waves[$i]['end_value'] > $waves[$i + 3]['end_value']) { // 4 don't inersect 1
                                 if ($i + 4 < $cnt) {
@@ -172,8 +172,8 @@ class Analysis extends CI_Controller {
                                         $waves[$i + 2]['marker'] = 3;
                                         $waves[$i + 3]['marker'] = 4;
                                         $waves[$i + 4]['marker'] = 5;
-                                        if ($i + 7 < $cnt) {
-                                            if ($waves[$i + 7]['end_value'] < $waves[$i]['start_value'] && $waves[$i + 7]['end_value'] > $waves[$i + 4]['end_value']) { // C less than 1 and C greater than 5
+                                        if ($i + 9 < $cnt) {
+                                            if ($waves[$i + 7]['end_value'] < $waves[$i]['start_value'] && $waves[$i + 7]['end_value'] > $waves[$i + 4]['end_value'] && $waves[$i + 9]['end_value'] < $waves[$i]['start_value']) { // end of C less than start of 1 AND end of C greater than end of 5 AND end of C+2 less then start of 1
                                                 $waves[$i + 5]['marker'] = 'A';
                                                 $waves[$i + 6]['marker'] = 'B';
                                                 $waves[$i + 7]['marker'] = 'C';
