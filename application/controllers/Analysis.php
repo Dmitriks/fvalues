@@ -21,8 +21,10 @@ class Analysis extends CI_Controller {
      * Index Page for this controller
      */
     public function index() {
+        $this->config->load('values');
+        $data['periods'] = $this->config->item('analysis_periods');
         $this->load->view('header', array('title' => 'Analysis'));
-        $this->load->view('analysis');
+        $this->load->view('analysis', $data);
         $this->load->view('footer');
     }
 
@@ -30,25 +32,31 @@ class Analysis extends CI_Controller {
      * Charts for symbol
      * 
      * @param string $code    Contains code of symbol
+     * @param int    $periods Contains amount of periods
+     * @param string $period  Contains name of period
      */
-    public function symbol($code, $period) {
+    public function symbol($code, $periods, $period) {
         $symbol = $this->symbol_model->get_symbol_by_code($code);
         if ($symbol) {
             $end = time();
-            $begin = strtotime("-1 $period", $end);
-            if ($period == 'hour') { // hour
-                $values = $this->value_model->get_minute_values($symbol['id'], $begin, $end);
-            } elseif ($period == 'day') { // day
-                $values = $this->value_model->get_hour_values($symbol['id'], $begin, $end);
-            } else { // month or year
-                $values = $this->value_model->get_day_values($symbol['id'], $begin, $end);
+            $begin = strtotime("-$periods $period", $end);
+            if ($begin) {
+                if ($period == 'hour') { // interval in hours
+                    $values = $this->value_model->get_minute_values($symbol['id'], $begin, $end);
+                } elseif ($period == 'day') { // interval in days
+                    $values = $this->value_model->get_hour_values($symbol['id'], $begin, $end);
+                } else { // interval in months
+                    $values = $this->value_model->get_day_values($symbol['id'], $begin, $end);
+                }
+                $waves = $this->_getWaves($values);
+                $this->_analyzeWaves($waves);
+                $data = array('waves' => $waves, 'symbol' => $code, 'periods' => $periods, 'period' => $period);
+                $this->load->view('header', array('title' => 'Analysis of ' . $symbol['name'] . ' (Last ' . $periods . ' ' . $period . 's)'));
+                $this->load->view('table', $data);
+                $this->load->view('footer');
+            } else {
+                show_404();
             }
-            $waves = $this->_getWaves($values);
-            $this->_analyzeWaves($waves);
-            $data['waves'] = $waves;
-            $this->load->view('header', array('title' => 'Analysis of ' . $symbol['name'] . ' (Last ' . $period . ')', 'period' => $period, 'symbol' => $code));
-            $this->load->view('table', $data);
-            $this->load->view('footer');
         } else {
             show_404();
         }
