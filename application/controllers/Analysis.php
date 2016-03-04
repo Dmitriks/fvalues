@@ -140,7 +140,7 @@ class Analysis extends CI_Controller {
                                         $waves[$i + 3]['marker'] = 4;
                                         $waves[$i + 4]['marker'] = 5;
                                         if ($i + 9 < $cnt) {
-                                            if ($waves[$i + 7]['end_value'] > $waves[$i]['start_value'] && $waves[$i + 7]['end_value'] < $waves[$i + 4]['end_value'] && $waves[$i + 9]['end_value'] > $waves[$i]['start_value']) { // end of C greater than start of 1 AND end of C less than end 5 AND end of C+2 greater than start of 1
+                                            if ($waves[$i + 7]['end_value'] >= $waves[$i]['start_value'] && $waves[$i + 7]['end_value'] < $waves[$i + 4]['end_value'] && $waves[$i + 9]['end_value'] > $waves[$i]['start_value']) { // end of C greater than start of 1 AND end of C less than end 5 AND end of C+2 greater than start of 1
                                                 $waves[$i + 5]['marker'] = 'A';
                                                 $waves[$i + 6]['marker'] = 'B';
                                                 $waves[$i + 7]['marker'] = 'C';
@@ -173,7 +173,7 @@ class Analysis extends CI_Controller {
                                         $waves[$i + 3]['marker'] = 4;
                                         $waves[$i + 4]['marker'] = 5;
                                         if ($i + 9 < $cnt) {
-                                            if ($waves[$i + 7]['end_value'] < $waves[$i]['start_value'] && $waves[$i + 7]['end_value'] > $waves[$i + 4]['end_value'] && $waves[$i + 9]['end_value'] < $waves[$i]['start_value']) { // end of C less than start of 1 AND end of C greater than end of 5 AND end of C+2 less then start of 1
+                                            if ($waves[$i + 7]['end_value'] <= $waves[$i]['start_value'] && $waves[$i + 7]['end_value'] > $waves[$i + 4]['end_value'] && $waves[$i + 9]['end_value'] < $waves[$i]['start_value']) { // end of C less than start of 1 AND end of C greater than end of 5 AND end of C+2 less then start of 1
                                                 $waves[$i + 5]['marker'] = 'A';
                                                 $waves[$i + 6]['marker'] = 'B';
                                                 $waves[$i + 7]['marker'] = 'C';
