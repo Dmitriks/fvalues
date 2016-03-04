@@ -23,7 +23,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         </table>
         <table class="table">
             <tr>
-                <?php foreach (array('year', 'month', 'day', 'hour') as $period) : ?>
+                <?php foreach (array('month', 'day', 'hour') as $period) : ?>
                     <td>
                         <a href="<?php echo base_url() ?>analysis/symbol/<?php echo $symbol ?>/<?php echo $periods ?>/<?php echo $period ?>"><?php echo $periods . ' ' . $period . 's' ?></a>
                     </td>
