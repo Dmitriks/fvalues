@@ -126,7 +126,7 @@ class Analysis extends CI_Controller {
         while ($i < $cnt) {
             if ($waves[$i]['direction'] == 1) {
                 if ($i + 1 < $cnt) {
-                    if ($waves[$i]['start_value'] < $waves[$i + 1]['end_value']) { // end of 2 is higher than start of 1
+                    if ($waves[$i]['start_value'] <= $waves[$i + 1]['end_value']) { // end of 2 is higher or equal than start of 1
                         if ($i + 3 < $cnt) {
                             if ($waves[$i]['end_value'] < $waves[$i + 3]['end_value']) { // 4 don't inersect 1
                                 if ($i + 4 < $cnt) {
@@ -159,7 +159,7 @@ class Analysis extends CI_Controller {
                 }
             } elseif ($waves[$i]['direction'] == -1) {
                 if ($i + 1 < $cnt) {
-                    if ($waves[$i]['start_value'] > $waves[$i + 1]['end_value']) { // end of 2 is less than start of 1
+                    if ($waves[$i]['start_value'] >= $waves[$i + 1]['end_value']) { // end of 2 is less or equal than start of 1
                         if ($i + 3 < $cnt) {
                             if ($waves[$i]['end_value'] > $waves[$i + 3]['end_value']) { // 4 don't inersect 1
                                 if ($i + 4 < $cnt) {
