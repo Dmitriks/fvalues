@@ -28,13 +28,14 @@ class Import extends CI_Controller {
         $this->cache->file->delete('quotes');
         $this->cache->file->save('quotes', $quotes, $cacheTime);
         chmod(APPPATH . 'cache/quotes', 0644);
+        $timeDiff = date('Z');
         // Save values in database
         foreach ($quotes as $key => $value) {
             $data = array();
             $data['symbol_id'] = $symbols[$key];
             $data['bid'] = $value['bid'];
             $data['ask'] = $value['ask'];
-            $data['time'] = strtotime('-2 hours', $value['lasttime']);
+            $data['time'] = strtotime("-$timeDiff second", $value['lasttime']);
             // Get last minute value
             $lastMinuteValue = $this->value_model->get_last_minute_value($data['symbol_id']);
             // Save minute value
