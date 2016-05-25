@@ -22,7 +22,7 @@ class Import extends CI_Controller {
         $symbols = $this->symbol_model->get_symbol_codes();
         $url = $apiUrl . '&q=' . urlencode(implode(',', array_keys($symbols)));
         $content = file_get_contents($url);
-        $quotes = unserialize($content);
+        $quotes = json_decode($content);
         // Save values in cache
         $cacheTime = $this->config->item('cache_time');
         $this->cache->file->delete('quotes');
@@ -30,12 +30,12 @@ class Import extends CI_Controller {
         chmod(APPPATH . 'cache/quotes', 0644);
         $timeDiff = date('Z');
         // Save values in database
-        foreach ($quotes as $key => $value) {
+        foreach ($quotes as $quote) {
             $data = array();
-            $data['symbol_id'] = $symbols[$key];
-            $data['bid'] = $value['bid'];
-            $data['ask'] = $value['ask'];
-            $data['time'] = strtotime("-$timeDiff second", $value['lasttime']);
+            $data['symbol_id'] = $symbols[$quote->symbol];
+            $data['bid'] = $quote->bid;
+            $data['ask'] = $quote->ask;
+            $data['time'] = strtotime("-$timeDiff second", $quote->lasttime);
             // Get last minute value
             $lastMinuteValue = $this->value_model->get_last_minute_value($data['symbol_id']);
             // Save minute value

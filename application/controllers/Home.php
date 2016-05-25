@@ -34,7 +34,7 @@ class Home extends CI_Controller {
             // Get remote quotes
             $url = $apiUrl . '&q=' . urlencode(implode(',', array_keys($symbols)));
             $quotes = file_get_contents($url);
-            $data['quotes'] = unserialize($quotes);
+            $data['quotes'] = json_decode($quotes);
             $this->cache->file->save('quotes', $data['quotes'], $cacheTime);
             chmod(APPPATH . 'cache/quotes', 0666);
         }
